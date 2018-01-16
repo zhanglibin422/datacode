@@ -1,0 +1,43 @@
+server:
+  port: 2000
+eureka:
+  instance:
+    hostname: localhost
+    instanceId: http://localhost:2000
+spring:
+  cloud:
+    config:
+      profile: dev
+      uri: http://192.168.13.53:9999
+#      stream: #cloud config 配置同步依赖，开发环境不配置，启动速度 翻十番
+#        kafka:
+#          binder:
+#            brokers: 192.168.13.51:9092,192.168.13.52:9092,192.168.13.53:9092
+#            zk-nodes: 192.168.13.51:2181,192.168.13.52:2181,192.168.13.53:2181
+  boot:
+    admin:
+#      url:  http://localhost:7002/
+  zipkin:
+#    base-url: http://192.168.13.51:9411/
+  sleuth:
+    sampler:
+      percentage: 1 #(default 0.1, i.e. 10%).Otherwise you might think that Sleuth is not working cause it’s omitting some spans.
+  redis:
+    cluster:
+      nodes:
+        - 192.168.13.53:6379
+        - 192.168.13.53:6380
+        - 192.168.13.53:6381
+        - 192.168.13.53:6382
+        - 192.168.13.53:6383
+        - 192.168.13.53:6384
+logging:
+  config: classpath:log4j2.xml
+  level:
+    root: info
+sceo:
+  sso:
+    server: https://casserver:8443
+    client: http://localhost:2000
+    callback: '/callback'
+    home-url: http://www.google.com

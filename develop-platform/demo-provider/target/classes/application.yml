@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: demo-provider
+  messages:
+    encoding: UTF-8
+    basename: i18n/demo
