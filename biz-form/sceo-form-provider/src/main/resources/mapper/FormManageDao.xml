@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huntkey.rx.sceo.form.provider.dao.FormManageDao">
+
+    <select id="getFormById" resultType="BizFormSetting" parameterType="java.lang.String">
+        SELECT
+            form_id  formId,
+            form_code  formCode,
+            form_name  formName,
+            form_status  formStatus,
+            form_remarks  formRemarks,
+            classify_code  classifyCode,
+            related_model_id relatedModelId,
+            related_flow_id relatedFlowId,
+            is_preset_form isPresetForm,
+            preset_form_url presetFormUrl,
+            edmc_name_en edmcNameEn,
+            label_width labelWidth,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy
+        FROM
+            biz_form_setting
+        WHERE
+            delete_flag = '0'
+            AND
+            form_id = #{formId}
+    </select>
+
+    <select id="getFormByFormName" resultType="BizFormSetting" parameterType="java.lang.String">
+        <bind name="pattern" value="'%' + _parameter + '%'" />
+        SELECT
+            form_id  formId,
+            form_code  formCode,
+            form_name  formName,
+            form_status  formStatus,
+            form_remarks  formRemarks,
+            classify_code  classifyCode,
+            related_model_id relatedModelId,
+            related_flow_id relatedFlowId,
+            is_preset_form isPresetForm,
+            preset_form_url presetFormUrl,
+            edmc_name_en edmcNameEn,
+            label_width labelWidth,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy
+        FROM
+          biz_form_setting
+        WHERE
+          delete_flag = '0'
+        AND
+          form_name LIKE #{pattern}
+        ORDER BY
+          form_status DESC,
+          form_name
+    </select>
+
+    <select id="getFormByName" resultType="BizFormSetting" parameterType="java.lang.String">
+        SELECT
+            form_id  formId,
+            form_code  formCode,
+            form_name  formName,
+            form_status  formStatus,
+            form_remarks  formRemarks,
+            classify_code  classifyCode,
+            related_model_id relatedModelId,
+            related_flow_id relatedFlowId,
+            is_preset_form isPresetForm,
+            preset_form_url presetFormUrl,
+            edmc_name_en edmcNameEn,
+            label_width labelWidth,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy
+        FROM
+            biz_form_setting
+        WHERE
+            delete_flag = '0'
+        AND
+            form_name = #{formName}
+    </select>
+
+    <select id="getFormByClassifyCode" resultType="BizFormSetting" parameterType="java.lang.String">
+        SELECT
+            form_id  formId,
+            form_code  formCode,
+            form_name  formName,
+            form_status  formStatus,
+            form_remarks  formRemarks,
+            classify_code  classifyCode,
+            related_model_id relatedModelId,
+            related_flow_id relatedFlowId,
+            is_preset_form isPresetForm,
+            preset_form_url presetFormUrl,
+            edmc_name_en edmcNameEn,
+            label_width labelWidth,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy
+        FROM
+         	biz_form_setting
+        WHERE
+          	delete_flag = '0'
+        AND
+          	classify_code = #{classifyCode}
+    </select>
+    
+    <select id="canUseForm" resultType="BizFormSetting" parameterType="java.util.Map">
+        SELECT
+            form_id  formId,
+            form_code  formCode,
+            form_name  formName,
+            form_status  formStatus,
+            form_remarks  formRemarks,
+            classify_code  classifyCode,
+            related_model_id relatedModelId,
+            related_flow_id relatedFlowId,
+            is_preset_form isPresetForm,
+            preset_form_url presetFormUrl,
+            edmc_name_en edmcNameEn,
+            label_width labelWidth,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy
+        FROM
+         	biz_form_setting
+        WHERE
+          	delete_flag = #{deleteFlag}
+        AND
+          	form_status = #{formStatus}
+    </select>
+
+
+    <insert id="createForm" parameterType="BizFormSetting">
+        INSERT INTO
+            biz_form_setting
+          <trim prefix="(" suffix=")" suffixOverrides=",">
+              form_id,
+              form_code,
+              form_name,
+              form_status,
+              form_remarks,
+              classify_code,
+              edmc_name_en,
+              related_model_id,
+              related_flow_id,
+              is_preset_form,
+              preset_form_url,
+              created_time,
+              created_by
+          </trim>
+          <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+              #{formId},
+              #{formCode},
+              #{formName},
+              #{formStatus},
+              #{formRemarks},
+              #{classifyCode},
+              #{edmcNameEn},
+              #{relatedModelId},
+              #{relatedFlowId},
+              #{isPresetForm},
+              #{presetFormUrl},
+              #{createdTime},
+              #{createdBy}
+          </trim>
+    </insert>
+
+    <update id="updateForm" parameterType="BizFormSetting">
+        UPDATE
+            biz_form_setting
+          <set>
+            <if test="formCode != null">form_code = #{formCode},</if>
+            <if test="formName != null">form_name = #{formName},</if>
+            <if test="formStatus != null">form_status = #{formStatus},</if>
+            <if test="formRemarks != null">form_remarks = #{formRemarks},</if>
+            <if test="classifyCode != null">classify_code = #{classifyCode},</if>
+            <if test="relatedModelId != null">related_model_id = #{relatedModelId},</if>
+            <if test="relatedFlowId != null">related_flow_id = #{relatedFlowId},</if>
+            <if test="isPresetForm != null">is_preset_form = #{isPresetForm},</if>
+            <if test="presetFormUrl != null">preset_form_url = #{presetFormUrl},</if>
+            <if test="edmcNameEn != null">edmc_name_en = #{edmcNameEn},</if>
+            <if test="labelWidth != null">label_width = #{labelWidth},</if>
+            updated_time = #{updatedTime},
+            updated_by = #{updatedBy}
+          </set>
+        WHERE
+          form_id = #{formId}
+        AND
+          delete_flag = '0'
+    </update>
+
+    <update id="deleteForm" parameterType="java.lang.String">
+        UPDATE
+            biz_form_setting
+        SET
+            delete_flag = '1'
+        WHERE
+            form_id = #{formId}
+    </update>
+
+    <update id="enabledForm" parameterType="java.util.Map">
+        UPDATE
+            biz_form_setting
+        SET
+            form_status = #{formStatus}
+        WHERE
+            form_id = #{formId}
+    </update>
+</mapper>

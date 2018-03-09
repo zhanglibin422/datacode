@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huntkey.rx.sceo.form.provider.dao.BizFormSettingMapper">
+  <resultMap id="BaseResultMap" type="com.huntkey.rx.sceo.form.common.model.BizFormSetting">
+    <id column="form_id" jdbcType="VARCHAR" property="formId" />
+    <result column="form_code" jdbcType="VARCHAR" property="formCode" />
+    <result column="form_name" jdbcType="VARCHAR" property="formName" />
+    <result column="form_status" jdbcType="CHAR" property="formStatus" />
+    <result column="form_remarks" jdbcType="VARCHAR" property="formRemarks" />
+    <result column="classify_code" jdbcType="VARCHAR" property="classifyCode" />
+    <result column="related_model_id" jdbcType="VARCHAR" property="relatedModelId" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+    <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    form_id, form_code, form_name, form_status, form_remarks, classify_code,
+    related_model_id, created_time, created_by, updated_time, updated_by, delete_flag
+  </sql>
+
+  <select id="getFormById" parameterType="java.lang.String" resultType="BizFormSetting">
+    select
+    form_id formId, form_code formCode, form_name formName, form_status formStatus,
+    form_remarks formRemarks, classify_code classifyCode, related_model_id relatedModelId,
+    created_time createdTime, created_by createdBy,
+    updated_time updateTime, updated_by updatedBy, delete_flag deleteFlag
+    from biz_form_setting
+    where form_id = #{formId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="insert" parameterType="BizFormSetting">
+    insert into biz_form_setting (
+        form_id, form_code, form_name, form_status, form_remarks,
+        classify_code, related_model_id, created_time,
+        created_by, updated_time, updated_by, delete_flag
+      )
+    values (#{formId,jdbcType=VARCHAR}, #{formCode,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, #{formStatus,jdbcType=CHAR}, #{formRemarks,jdbcType=VARCHAR},
+      #{classifyCode,jdbcType=VARCHAR}, #{relatedModelId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
+      #{createdBy,jdbcType=VARCHAR}, #{updatedTime,jdbcType=TIMESTAMP}, #{updatedBy,jdbcType=VARCHAR}, #{deleteFlag,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <!--更新表单方法-->
+  <update id="updateForm" parameterType="BizFormSetting">
+    UPDATE biz_form_setting
+    <set>
+      <if test="formCode != null">
+        form_code = #{formCode,jdbcType=VARCHAR},
+      </if>
+      <if test="formName != null">
+        form_name = #{formName,jdbcType=VARCHAR},
+      </if>
+      <if test="formStatus != null">
+        form_status = #{formStatus,jdbcType=CHAR},
+      </if>
+      <if test="formRemarks != null">
+        form_remarks = #{formRemarks,jdbcType=VARCHAR},
+      </if>
+      <if test="classifyCode != null">
+        classify_code = #{classifyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relatedModelId != null">
+        related_model_id = #{relatedModelId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        created_by = #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedBy != null">
+        updated_by = #{updatedBy,jdbcType=VARCHAR},
+      </if>
+      <if test="deleteFlag != null">
+        delete_flag = #{deleteFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE form_id = #{formId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

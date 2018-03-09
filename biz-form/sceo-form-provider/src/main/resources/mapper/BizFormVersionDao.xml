@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.huntkey.rx.sceo.form.provider.dao.BizFormVersionDao">
+
+    <resultMap id="BaseResultMap" type="com.huntkey.rx.sceo.form.common.model.BizFormVersion">
+        <id column="version_id" jdbcType="VARCHAR" property="versionId" />
+        <result column="form_id" jdbcType="VARCHAR" property="formId" />
+        <result column="form_version" jdbcType="VARCHAR" property="formVersion" />
+        <result column="form_status" jdbcType="CHAR" property="formStatus" />
+        <result column="form_data" jdbcType="VARCHAR" property="formData" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="updated_by" jdbcType="VARCHAR" property="updatedBy" />
+        <result column="delete_flag" jdbcType="VARCHAR" property="deleteFlag" />
+        <result column="form_list_flag" jdbcType="VARCHAR" property="formListFlag" />
+    </resultMap>
+
+    <select id="getVersionsByFormId" resultMap="BaseResultMap" parameterType="java.util.Map">
+
+        SELECT
+            version_id versionId,
+            form_id  formId,
+            form_version  formVersion,
+            form_status  formStatus,
+            form_data  formData,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy,
+            delete_flag deleteFlag,
+            form_list_flag formListFlag
+        FROM
+            biz_form_version
+        WHERE
+            delete_flag = '0'
+            AND form_id = #{formId, jdbcType=VARCHAR}
+        <if test='draftStatus != null and draftStatus != ""'>
+            AND form_status != #{draftStatus, jdbcType=VARCHAR}
+        </if>
+            ORDER BY updated_time DESC
+    </select>
+
+    <select id="getAllVersionsByFormId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            version_id versionId,
+            form_id formId,
+            form_version formVersion,
+            form_status formStatus,
+            form_data formData,
+            created_time createdTime,
+            created_by createdBy,
+            updated_time updatedTime,
+            updated_by updatedBy,
+            delete_flag deleteFlag,
+            form_list_flag formListFlag
+        FROM
+        biz_form_version
+        WHERE delete_flag = '0'
+            AND form_id = #{formId, jdbcType=VARCHAR}
+            AND form_status != '-1'
+            ORDER BY updated_time DESC
+    </select>
+
+    <select id="getStartVersionByFormId" resultMap="BaseResultMap" parameterType="java.util.Map">
+        SELECT
+            version_id versionId,
+            form_id  formId,
+            form_version  formVersion,
+            form_status  formStatus,
+            form_data  formData,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy,
+            delete_flag deleteFlag,
+            form_list_flag formListFlag
+        FROM
+            biz_form_version
+        WHERE
+            delete_flag = '0'
+        AND
+            form_id = #{formId, jdbcType=VARCHAR}
+        AND
+            form_status = #{formStatus, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getLatestVersion" resultType="java.lang.Integer" parameterType="java.lang.String">
+        SELECT
+          IFNULL(MAX(form_version),0)
+        FROM
+          biz_form_version
+        WHERE
+          delete_flag = '0'
+        AND
+          form_id = #{formId, jdbcType=VARCHAR}
+        AND
+          form_status != '-1'
+    </select>
+
+    <select id="getVersionById" resultType="BizFormVersion" parameterType="java.lang.String">
+        SELECT version_id versionId,
+            form_id  formId,
+            form_version  formVersion,
+            form_status  formStatus,
+            form_data  formData,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy,
+            form_list_flag formListFlag
+        FROM
+        biz_form_version
+        WHERE version_id = #{versionId, jdbcType=VARCHAR}
+    </select>
+
+    <select id="getDraftVersionsByFormId" resultType="BizFormVersion" parameterType="java.util.Map">
+        SELECT
+            version_id versionId,
+            form_id  formId,
+            form_version  formVersion,
+            form_status  formStatus,
+            form_data  formData,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy,
+            delete_flag deleteFlag,
+            form_list_flag formListFlag
+        FROM
+            biz_form_version
+        WHERE
+            delete_flag = '0'
+        AND
+            form_id = #{formId}
+        AND
+            form_status = #{formStatus}
+    </select>
+
+    <insert id="createVersion" parameterType="BizFormVersion">
+        INSERT INTO
+          biz_form_version
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            version_id,
+            form_id,
+            form_version,
+            form_status,
+            form_data,
+            created_time,
+            created_by,
+            form_list_flag,
+            updated_time
+        </trim>
+        <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+            #{versionId},
+            #{formId},
+            #{formVersion},
+            #{formStatus},
+            #{formData},
+            #{createdTime},
+            #{createdBy},
+            #{formListFlag},
+            #{updatedTime}
+        </trim>
+    </insert>
+
+    <update id="updateVersion" parameterType="BizFormSetting">
+        UPDATE
+          biz_form_version
+        <set>
+            <if test="formVersion != null">form_version = #{formVersion},</if>
+            <if test="formStatus != null">form_status = #{formStatus},</if>
+            <if test="formData != null">form_data = #{formData},</if>
+            <if test="formListFlag != null">form_list_flag = #{formListFlag},</if>
+            updated_time = #{updatedTime},
+            updated_by = #{updatedBy}
+        </set>
+        WHERE
+          version_id = #{versionId}
+        AND
+          delete_flag = '0'
+    </update>
+
+    <update id="updateVersionByFormIdAndStatus" parameterType="BizFormSetting">
+        UPDATE biz_form_version
+        SET form_status = #{formStatus, jdbcType=VARCHAR}
+        WHERE form_id = #{formId, jdbcType=VARCHAR}
+        AND delete_flag = '0'
+        AND form_status = '9'
+    </update>
+
+    <update id="updateVersionById" parameterType="BizFormSetting">
+        UPDATE biz_form_version
+        <set>
+            <if test="formStatus != null">form_status = #{formStatus, jdbcType=VARCHAR},</if>
+            <if test="updatedTime != null">updated_time = #{updatedTime},</if>
+        </set>
+        WHERE version_id = #{versionId, jdbcType=VARCHAR}
+        AND delete_flag = '0'
+    </update>
+
+    <update id="deleteVersion" parameterType="java.lang.String">
+        UPDATE
+            biz_form_version
+        SET
+          delete_flag = '1'
+        WHERE
+            version_id = #{versionId}
+    </update>
+
+    <update id="enabledVersion" parameterType="BizFormSetting">
+        UPDATE
+            biz_form_version
+        SET
+          form_status = #{formStatus}
+        WHERE
+          version_id = #{versionId}
+    </update>
+
+    <!-- 停用所有版本,除了草稿状态不做更新 -->
+    <update id="stopVersion" parameterType="java.util.Map">
+        UPDATE
+          biz_form_version
+        SET
+          form_status = #{formStatus}
+        WHERE
+          form_id = #{formId}
+        AND
+          form_status != #{draftStatus}
+    </update>
+
+    <update id="deleteFormVersion" parameterType="BizFormVersion">
+        UPDATE
+        biz_form_version
+        SET
+        delete_flag = #{deleteFlag, jdbcType=VARCHAR}
+        WHERE version_id = #{versionId, jdbcType=VARCHAR}
+    </update>
+
+    <select id="getAllOpenVersions" resultMap="BaseResultMap">
+        SELECT
+            version_id versionId,
+            form_id  formId,
+            form_version  formVersion,
+            form_status  formStatus,
+            form_data  formData,
+            created_time  createdTime,
+            created_by  createdBy,
+            updated_time  updatedTime,
+            updated_by  updatedBy,
+            delete_flag deleteFlag,
+            form_list_flag formListFlag
+        FROM
+            biz_form_version
+        WHERE
+            delete_flag = '0'
+        AND
+          form_status != #{draftStatus, jdbcType=VARCHAR}
+        AND
+          form_list_flag = #{listFlag, jdbcType=VARCHAR}
+    </select>
+</mapper>
